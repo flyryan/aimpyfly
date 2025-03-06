@@ -77,6 +77,11 @@ class AIMBot:
         try:
             logger.info(f"Processing message from {sender}")
             
+            # Check if this is a "clear" command
+            if message.strip().lower() == "clear":
+                await self._handle_clear_command(sender)
+                return
+            
             # Get or create a session ID for this user
             session_id = self.user_sessions.get(sender)
             if not session_id:
@@ -114,6 +119,28 @@ class AIMBot:
         except Exception as e:
             logger.error(f"Error handling message from {sender}: {str(e)}")
             await self.handle_error(sender, str(e))
+    
+    async def _handle_clear_command(self, sender: str):
+        """
+        Handle the "clear" command from a user.
+        
+        Args:
+            sender (str): Sender's username
+        """
+        logger.info(f"Clearing conversation history for {sender}")
+        
+        # Clear the conversation in Dify client
+        session_id = self.user_sessions.get(sender)
+        if session_id:
+            await self.dify_client.clear_conversation(sender)
+            # Remove the session ID from our mapping
+            if sender in self.user_sessions:
+                del self.user_sessions[sender]
+        
+        # Send confirmation message
+        confirmation = "Memory cleared. Your next message will be treated as the start of a new conversation."
+        await self.aim_handler.send_message(sender, confirmation)
+        logger.info(f"Sent clear confirmation to {sender}")
     
     async def _send_periodic_typing(self, recipient: str, interval: float = 5.0):
         """

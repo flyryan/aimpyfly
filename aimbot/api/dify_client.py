@@ -80,6 +80,25 @@ class DifyClient:
         logger.debug(f"Created placeholder conversation ID for user {user_id}: {conversation_id}")
         return conversation_id
     
+    async def clear_conversation(self, user_id: str) -> bool:
+        """
+        Clear a user's conversation history by removing their conversation ID.
+        
+        Args:
+            user_id (str): User identifier
+            
+        Returns:
+            bool: True if conversation was cleared, False otherwise
+        """
+        if user_id in self.conversations:
+            # Remove the conversation ID from our mapping
+            del self.conversations[user_id]
+            logger.info(f"Cleared conversation history for user {user_id}")
+            return True
+        else:
+            logger.debug(f"No conversation found to clear for user {user_id}")
+            return False
+    
     async def send_message(self, user_id: str, message: str) -> Tuple[str, Dict[str, Any]]:
         """
         Send a message to the Dify Chat API.
