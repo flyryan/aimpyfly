@@ -3,6 +3,8 @@ AIM message handler for the AIM chatbot.
 Handles AIM connection and message processing.
 """
 import asyncio
+import os
+import struct
 from typing import Dict, Any, Callable, Coroutine, Optional
 from aimpyfly import aim_client
 
@@ -90,6 +92,55 @@ class AIMHandler:
                 logger.info("Disconnected from AIM server")
             except Exception as e:
                 logger.error(f"Error disconnecting from AIM server: {str(e)}")
+    
+    async def send_typing_notification(self, recipient: str, typing_status: bool = True) -> bool:
+        """
+        Send a typing notification to an AIM user.
+        
+        Args:
+            recipient (str): Recipient's username
+            typing_status (bool): True for typing, False for stopped typing
+            
+        Returns:
+            bool: True if notification was sent successfully, False otherwise
+        """
+        if not self.client or not self.connected:
+            logger.error("Cannot send typing notification: Not connected to AIM server")
+            return False
+        
+        try:
+            # ICBM Cookie (8 random bytes)
+            cookie = os.urandom(8)
+            
+            # Create SNAC data for typing notification
+            # Family 0x0004 (ICBM), Subtype 0x0014 (Typing Notification)
+            typing_value = 0x0002 if typing_status else 0x0000  # 0x0002 = typing, 0x0000 = stopped typing
+            
+            # Create SNAC data
+            snac_data = (
+                cookie +  # ICBM Cookie
+                struct.pack('!H', 0x0001) +  # Channel
+                struct.pack('!B', len(recipient)) +  # Recipient length
+                recipient.encode('utf-8') +  # Recipient
+                struct.pack('!H', typing_value)  # Typing status
+            )
+            
+            # Create SNAC packet
+            snac_packet = self.client.oscar.create_snac(0x0004, 0x0014, 0x0000, self.client.seq_num, snac_data)
+            
+            # Create FLAP packet
+            flap_packet = self.client.oscar.create_flap(0x02, self.client.seq_num, snac_packet)
+            
+            # Send the packet
+            self.client.writer.write(flap_packet)
+            await self.client.writer.drain()
+            
+            logger.debug(f"Sent typing notification to {recipient}: {'typing' if typing_status else 'stopped typing'}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to send typing notification to {recipient}: {str(e)}")
+            return False
     
     async def send_message(self, recipient: str, message: str) -> bool:
         """

@@ -84,15 +84,53 @@ class AIMBot:
                 self.user_sessions[sender] = session_id
                 logger.debug(f"Created new session for {sender}: {session_id}")
             
-            # Send the message to Dify API
-            response_text, metadata = await self.dify_client.send_message(session_id, message)
+            # Send typing notification
+            await self.aim_handler.send_typing_notification(sender, True)
             
-            # Send the response back to the AIM user
-            await self.send_response(sender, response_text)
+            # Create a task for sending periodic typing notifications
+            typing_task = asyncio.create_task(self._send_periodic_typing(sender))
+            
+            try:
+                # Send the message to Dify API
+                response_text, metadata = await self.dify_client.send_message(session_id, message)
+                
+                # Cancel the typing notification task
+                typing_task.cancel()
+                
+                # Send "stopped typing" notification
+                await self.aim_handler.send_typing_notification(sender, False)
+                
+                # Send the response back to the AIM user
+                await self.send_response(sender, response_text)
+                
+            except asyncio.CancelledError:
+                logger.warning(f"Message processing for {sender} was cancelled")
+                await self.aim_handler.send_typing_notification(sender, False)
+            finally:
+                # Ensure typing task is cancelled
+                if not typing_task.done():
+                    typing_task.cancel()
             
         except Exception as e:
             logger.error(f"Error handling message from {sender}: {str(e)}")
             await self.handle_error(sender, str(e))
+    
+    async def _send_periodic_typing(self, recipient: str, interval: float = 5.0):
+        """
+        Send periodic typing notifications to keep the typing indicator active.
+        
+        Args:
+            recipient (str): Recipient's username
+            interval (float): Interval between typing notifications in seconds
+        """
+        try:
+            while True:
+                await asyncio.sleep(interval)
+                await self.aim_handler.send_typing_notification(recipient, True)
+                logger.debug(f"Sent periodic typing notification to {recipient}")
+        except asyncio.CancelledError:
+            logger.debug(f"Periodic typing notifications to {recipient} cancelled")
+            raise
     
     async def send_response(self, recipient: str, response: str):
         """
