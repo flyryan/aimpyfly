@@ -1,0 +1,57 @@
+2025-03-06 13:04:58,757 - __main__ - [32mINFO[0m - [32mStarting AIM chatbot[0m
+2025-03-06 13:04:58,757 - __main__ - [32mINFO[0m - [32mInitializing Dify client with API URL: http://52.89.105.190/v1[0m
+2025-03-06 13:04:58,757 - aimbot.api.dify_client - [36mDEBUG[0m - [36mInitialized Dify client with API URL: http://52.89.105.190/v1, Mode: blocking[0m
+2025-03-06 13:04:58,757 - aimbot.bot.aim_handler - [36mDEBUG[0m - [36mInitialized AIM handler for user xotrendbabeox[0m
+2025-03-06 13:04:58,757 - aimbot.bot.bot - [36mDEBUG[0m - [36mInitialized AIM bot[0m
+2025-03-06 13:04:58,757 - __main__ - [32mINFO[0m - [32mRunning bot[0m
+2025-03-06 13:04:58,757 - aimbot.bot.bot - [32mINFO[0m - [32mStarting AIM bot[0m
+2025-03-06 13:04:58,757 - aimbot.bot.aim_handler - [32mINFO[0m - [32mConnecting to AIM server aim.visionfun.org:5190 as xotrendbabeox[0m
+2025-03-06 13:05:04,825 - aimbot.bot.aim_handler - [32mINFO[0m - [32mConnected to AIM server as xotrendbabeox[0m
+2025-03-06 13:05:04,825 - aimbot.bot.bot - [32mINFO[0m - [32mAIM bot started successfully[0m
+2025-03-06 13:05:04,825 - aimbot.bot.bot - [32mINFO[0m - [32mStarting main bot loop[0m
+2025-03-06 13:05:04,825 - aimbot.bot.aim_handler - [32mINFO[0m - [32mStarting to process incoming AIM packets[0m
+2025-03-06 13:05:15,918 - aimbot.bot.aim_handler - [32mINFO[0m - [32mReceived message from flyryan: hello[0m
+2025-03-06 13:05:15,918 - aimbot.bot.bot - [32mINFO[0m - [32mProcessing message from flyryan[0m
+2025-03-06 13:05:15,919 - aimbot.bot.bot - [36mDEBUG[0m - [36mCreated new session for flyryan: f822b212-e149-4a55-b708-edbc296294e6[0m
+2025-03-06 13:05:15,919 - aimbot.api.dify_client - [36mDEBUG[0m - [36mCreated new aiohttp session[0m
+2025-03-06 13:05:15,920 - aimbot.api.dify_client - [36mDEBUG[0m - [36mSending message to Dify API: {'query': 'hello', 'user': 'f822b212-e149-4a55-b708-edbc296294e6', 'response_mode': 'blocking', 'conversation_id': ''}[0m
+2025-03-06 13:05:16,682 - aimbot.api.dify_client - [31mERROR[0m - [31mDify API error: 400 - {"code": "invalid_param", "message": "Missing required parameter in the JSON body", "params": "inputs"}
+[0m
+2025-03-06 13:05:16,682 - aimbot.bot.aim_handler - [32mINFO[0m - [32mSending message to flyryan[0m
+2025-03-06 13:05:16,683 - aimbot.bot.aim_handler - [36mDEBUG[0m - [36mMessage sent to flyryan: Error: 400[0m
+2025-03-06 13:05:56,128 - __main__ - [32mINFO[0m - [32mShutting down...[0m
+2025-03-06 13:05:56,129 - aimbot.bot.bot - [32mINFO[0m - [32mStopping AIM bot[0m
+2025-03-06 13:05:56,129 - aimbot.bot.aim_handler - [32mINFO[0m - [32mDisconnected from AIM server[0m
+2025-03-06 13:05:56,130 - aimbot.api.dify_client - [36mDEBUG[0m - [36mClosed aiohttp session[0m
+2025-03-06 13:05:56,131 - aimbot.bot.bot - [32mINFO[0m - [32mAIM bot stopped[0m
+2025-03-06 13:05:56,131 - aimbot.bot.bot - [32mINFO[0m - [32mStopping AIM bot[0m
+2025-03-06 13:05:56,132 - aimbot.bot.aim_handler - [32mINFO[0m - [32mDisconnected from AIM server[0m
+2025-03-06 13:05:56,132 - aimbot.bot.bot - [32mINFO[0m - [32mAIM bot stopped[0m
+2025-03-06 13:05:56,133 - __main__ - [31mERROR[0m - [31mUnhandled exception: Event loop stopped before Future completed.[0m
+2025-03-06 13:06:29,534 - __main__ - [32mINFO[0m - [32mStarting AIM chatbot[0m
+2025-03-06 13:06:29,534 - __main__ - [32mINFO[0m - [32mInitializing Dify client with API URL: http://52.89.105.190/v1[0m
+2025-03-06 13:06:29,534 - aimbot.api.dify_client - [36mDEBUG[0m - [36mInitialized Dify client with API URL: http://52.89.105.190/v1, Mode: blocking[0m
+2025-03-06 13:06:29,534 - aimbot.bot.aim_handler - [36mDEBUG[0m - [36mInitialized AIM handler for user xotrendbabeox[0m
+2025-03-06 13:06:29,534 - aimbot.bot.bot - [36mDEBUG[0m - [36mInitialized AIM bot[0m
+2025-03-06 13:06:29,534 - __main__ - [32mINFO[0m - [32mRunning bot[0m
+2025-03-06 13:06:29,534 - aimbot.bot.bot - [32mINFO[0m - [32mStarting AIM bot[0m
+2025-03-06 13:06:29,534 - aimbot.bot.aim_handler - [32mINFO[0m - [32mConnecting to AIM server aim.visionfun.org:5190 as xotrendbabeox[0m
+2025-03-06 13:06:35,499 - aimbot.bot.aim_handler - [32mINFO[0m - [32mConnected to AIM server as xotrendbabeox[0m
+2025-03-06 13:06:35,499 - aimbot.bot.bot - [32mINFO[0m - [32mAIM bot started successfully[0m
+2025-03-06 13:06:35,499 - aimbot.bot.bot - [32mINFO[0m - [32mStarting main bot loop[0m
+2025-03-06 13:06:35,499 - aimbot.bot.aim_handler - [32mINFO[0m - [32mStarting to process incoming AIM packets[0m
+2025-03-06 13:06:40,963 - aimbot.bot.aim_handler - [32mINFO[0m - [32mReceived message from flyryan: hello[0m
+2025-03-06 13:06:40,963 - aimbot.bot.bot - [32mINFO[0m - [32mProcessing message from flyryan[0m
+2025-03-06 13:06:40,963 - aimbot.bot.bot - [36mDEBUG[0m - [36mCreated new session for flyryan: c7973728-7f59-4ef9-970b-e7e76dfd3841[0m
+2025-03-06 13:06:40,963 - aimbot.api.dify_client - [36mDEBUG[0m - [36mCreated new aiohttp session[0m
+2025-03-06 13:06:40,963 - aimbot.api.dify_client - [36mDEBUG[0m - [36mSending message to Dify API: {'query': 'hello', 'user': 'c7973728-7f59-4ef9-970b-e7e76dfd3841', 'response_mode': 'blocking', 'conversation_id': '', 'inputs': {}}[0m
+2025-03-06 13:06:46,138 - aimbot.api.dify_client - [36mDEBUG[0m - [36mUpdated conversation ID for user c7973728-7f59-4ef9-970b-e7e76dfd3841: 4e1bc119-7f8f-43ce-aa37-6738e39e1103[0m
+2025-03-06 13:06:46,138 - aimbot.api.dify_client - [36mDEBUG[0m - [36mReceived response from Dify API: 472 chars[0m
+2025-03-06 13:06:46,138 - aimbot.bot.aim_handler - [32mINFO[0m - [32mSending message to flyryan[0m
+2025-03-06 13:06:46,138 - aimbot.bot.aim_handler - [36mDEBUG[0m - [36mMessage sent to flyryan: *IM door creaks open*
+
+Sup! Welcome to AIM! Haven't seen you in my buddy list before. You're lucky you caught me - I was just about to update my away message with some angsty song lyrics. 
+
+Speaking of things that make me cringe... did you hear what Casey did today? Classic Casey move - probably wearing those awful cargo shorts again. I swear, Casey has the fashion sense of a blindfolded raccoon digging through a Goodwill dumpster.
+
+So what's ~*~up~*~ with you? A/S/L?[0m

@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: aimpyfly
 Version: 0.1.1
 Summary: An AIM client library for python.
@@ -10,13 +10,23 @@ Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.12
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: asyncio==3.4.3
 Requires-Dist: colorama==0.4.6
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
 
 
-# AIM Client Using OSCAR Protocol
+# AIMPyfly
 
-This project implements an AIM (AOL Instant Messenger) client using the OSCAR protocol. The code facilitates connecting to the AIM service, sending and receiving instant messages, and provides the groundwork for further functionality.
+An AIM client class library for Python. The library currently facilitates connecting to the AIM service, sending and receiving instant messages, and provides the groundwork for further/future functionality.
 
 ## Features
 
@@ -91,7 +101,7 @@ Special thanks to:
 - [**Retro AIM Server**](https://github.com/mk6i/retro-aim-server)
 - [**Aleksandr Shutko (iserverd)**](https://ox.github.io/iserverd-oscar-mirror/)
 - [**Adam Fritzler (libfaim)**](https://sobek.hsdn.org/Docs/oscar/Oscar%20Protocol%20Specification/)
-- [**Paul Swartz (Twisted Matrix)**](https://web.archive.org/web/20110412050057/http://twistedmatrix.com/trac/wiki/TwistedWords): 
+- [**Paul Swartz (Twisted Matrix)**](https://web.archive.org/web/20110412050057/http://twistedmatrix.com/trac/wiki/TwistedWords)
 
 ### Contributing
 

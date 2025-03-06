@@ -1,2 +1,5 @@
-asyncio==3.4.3
+aimpyfly
+aiohttp
+python-dotenv
 colorama==0.4.6
+asyncio==3.4.3

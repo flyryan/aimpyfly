@@ -1,5 +1,17 @@
+LICENSE
 README.md
 setup.py
+aimbot/__init__.py
+aimbot/main.py
+aimbot/api/__init__.py
+aimbot/api/dify_client.py
+aimbot/bot/__init__.py
+aimbot/bot/aim_handler.py
+aimbot/bot/bot.py
+aimbot/config/__init__.py
+aimbot/config/settings.py
+aimbot/utils/__init__.py
+aimbot/utils/logger.py
 aimpyfly/__init__.py
 aimpyfly/aim_client.py
 aimpyfly/log_utils.py
