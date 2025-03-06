@@ -33,6 +33,8 @@ class AIMBot:
         self.dify_client = dify_client
         self.aim_handler = AIMHandler(aim_credentials, self.handle_message)
         self.user_sessions: Dict[str, str] = {}  # Map AIM usernames to session IDs
+        self.message_buffers: Dict[str, Dict[str, Any]] = {}  # Message buffers for each user
+        self.processing_users: Dict[str, bool] = {}  # Track users with ongoing API requests
         self.running = False
         
         logger.debug("Initialized AIM bot")
@@ -79,6 +81,14 @@ class AIMBot:
             
             # Check if this is a "clear" command
             if message.strip().lower() == "clear":
+                # Cancel any pending buffer tasks
+                if sender in self.message_buffers and 'task' in self.message_buffers[sender]:
+                    self.message_buffers[sender]['task'].cancel()
+                    self.message_buffers[sender] = {}
+                
+                # Reset processing state
+                self.processing_users[sender] = False
+                
                 await self._handle_clear_command(sender)
                 return
             
@@ -89,40 +99,152 @@ class AIMBot:
                 self.user_sessions[sender] = session_id
                 logger.debug(f"Created new session for {sender}: {session_id}")
             
-            # Add a natural delay before showing typing indicator (1-3 seconds)
-            delay = 1 + (uuid.uuid4().int % 2)  # Random delay between 1-3 seconds
-            await asyncio.sleep(delay)
+            # Check if we're already processing a message for this user
+            if self.processing_users.get(sender, False):
+                logger.info(f"User {sender} has a message being processed, buffering new message")
+                await self._buffer_message(sender, message)
+                return
             
-            # Send typing notification
-            await self.aim_handler.send_typing_notification(sender, True)
+            # Check if the message is very short (likely part of a multi-message input)
+            if len(message.strip()) < 10:
+                await self._buffer_message(sender, message)
+                return
             
-            # Create a task for sending periodic typing notifications
-            typing_task = asyncio.create_task(self._send_periodic_typing(sender))
-            
-            try:
-                # Send the message to Dify API
-                response_text, metadata = await self.dify_client.send_message(session_id, message)
-                
-                # Cancel the typing notification task
-                typing_task.cancel()
-                
-                # Send "stopped typing" notification
-                await self.aim_handler.send_typing_notification(sender, False)
-                
-                # Send the response back to the AIM user
-                await self.send_response(sender, response_text)
-                
-            except asyncio.CancelledError:
-                logger.warning(f"Message processing for {sender} was cancelled")
-                await self.aim_handler.send_typing_notification(sender, False)
-            finally:
-                # Ensure typing task is cancelled
-                if not typing_task.done():
-                    typing_task.cancel()
+            # Process the message normally
+            await self._process_message(sender, message)
             
         except Exception as e:
             logger.error(f"Error handling message from {sender}: {str(e)}")
             await self.handle_error(sender, str(e))
+    
+    async def _buffer_message(self, sender: str, message: str):
+        """
+        Buffer short messages to combine them before sending to the API.
+        
+        Args:
+            sender (str): Sender's username
+            message (str): Message content
+        """
+        # Initialize buffer for this user if it doesn't exist
+        if sender not in self.message_buffers:
+            self.message_buffers[sender] = {
+                'messages': [],
+                'last_update': asyncio.get_event_loop().time(),
+                'task': None
+            }
+        
+        buffer = self.message_buffers[sender]
+        
+        # Add message to buffer
+        buffer['messages'].append(message)
+        buffer['last_update'] = asyncio.get_event_loop().time()
+        
+        # Cancel existing task if there is one
+        if buffer['task'] and not buffer['task'].done():
+            buffer['task'].cancel()
+        
+        # Create a new task to process the buffer after a delay
+        buffer['task'] = asyncio.create_task(self._process_buffer_after_delay(sender, 1.5))  # 1.5 second delay
+        
+        # Send typing notification to indicate we're listening
+        await self.aim_handler.send_typing_notification(sender, True)
+    
+    async def _process_buffer_after_delay(self, sender: str, delay: float):
+        """
+        Process the message buffer after a delay.
+        
+        Args:
+            sender (str): Sender's username
+            delay (float): Delay in seconds
+        """
+        try:
+            await asyncio.sleep(delay)
+            
+            if sender in self.message_buffers and self.message_buffers[sender]['messages']:
+                # Combine messages in the buffer
+                combined_message = " ".join(self.message_buffers[sender]['messages'])
+                
+                # Clear the buffer
+                self.message_buffers[sender]['messages'] = []
+                
+                # Process the combined message
+                await self._process_message(sender, combined_message)
+        
+        except asyncio.CancelledError:
+            # Task was cancelled, likely because a new message arrived
+            pass
+    
+    async def _process_message(self, sender: str, message: str):
+        """
+        Process a message and send it to the Dify API.
+        
+        Args:
+            sender (str): Sender's username
+            message (str): Message content
+        """
+        # Mark this user as being processed
+        self.processing_users[sender] = True
+        
+        # Add a natural delay before showing typing indicator (1-3 seconds)
+        delay = 1 + (uuid.uuid4().int % 2)  # Random delay between 1-3 seconds
+        await asyncio.sleep(delay)
+        
+        # Send typing notification
+        await self.aim_handler.send_typing_notification(sender, True)
+        
+        # Create a task for sending periodic typing notifications
+        typing_task = asyncio.create_task(self._send_periodic_typing(sender))
+        
+        try:
+            # Get the session ID
+            session_id = self.user_sessions.get(sender)
+            
+            # Send the message to Dify API
+            response_text, metadata = await self.dify_client.send_message(session_id, message)
+            
+            # Cancel the typing notification task
+            typing_task.cancel()
+            
+            # Send "stopped typing" notification
+            await self.aim_handler.send_typing_notification(sender, False)
+            
+            # Send the response back to the AIM user
+            await self.send_response(sender, response_text)
+            
+            # Process any buffered messages that came in while we were processing
+            await self._process_buffered_messages(sender)
+            
+        except asyncio.CancelledError:
+            logger.warning(f"Message processing for {sender} was cancelled")
+            await self.aim_handler.send_typing_notification(sender, False)
+        except Exception as e:
+            logger.error(f"Error processing message from {sender}: {str(e)}")
+            await self.handle_error(sender, str(e))
+        finally:
+            # Ensure typing task is cancelled
+            if typing_task and not typing_task.done():
+                typing_task.cancel()
+            
+            # Mark this user as no longer being processed
+            self.processing_users[sender] = False
+    
+    async def _process_buffered_messages(self, sender: str):
+        """
+        Process any messages that were buffered while waiting for an API response.
+        
+        Args:
+            sender (str): Sender's username
+        """
+        if sender in self.message_buffers and self.message_buffers[sender]['messages']:
+            # Combine messages in the buffer
+            combined_message = " ".join(self.message_buffers[sender]['messages'])
+            logger.info(f"Processing buffered messages for {sender}: {combined_message}")
+            
+            # Clear the buffer
+            self.message_buffers[sender]['messages'] = []
+            
+            # Process the combined message
+            await self._process_message(sender, combined_message)
     
     async def _handle_clear_command(self, sender: str):
         """
@@ -198,7 +320,19 @@ class AIMBot:
             recipient (str): Recipient's username
             error (str): Error message
         """
-        error_message = f"Sorry, I encountered an error: {error}"
+        # Check for specific error types and provide user-friendly messages
+        if "429" in error or "Too many tokens" in error or "rate limit" in error.lower():
+            error_message = "I'm receiving too many messages too quickly. Please wait a moment before sending more messages."
+        elif "400" in error and "blank" in error:
+            error_message = "I had trouble processing your short message. Please try sending a more complete message."
+        else:
+            # Generic error message for other errors
+            error_message = "Sorry, I encountered an error processing your message. Please try again in a moment."
+        
+        # Log the detailed error for debugging
+        logger.error(f"Error details for {recipient}: {error}")
+        
+        # Send the user-friendly error message
         await self.aim_handler.send_message(recipient, error_message)
     
     async def run(self):
