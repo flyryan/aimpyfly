@@ -89,6 +89,10 @@ class AIMBot:
                 self.user_sessions[sender] = session_id
                 logger.debug(f"Created new session for {sender}: {session_id}")
             
+            # Add a natural delay before showing typing indicator (1-3 seconds)
+            delay = 1 + (uuid.uuid4().int % 2)  # Random delay between 1-3 seconds
+            await asyncio.sleep(delay)
+            
             # Send typing notification
             await self.aim_handler.send_typing_notification(sender, True)
             
