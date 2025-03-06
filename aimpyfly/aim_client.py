@@ -705,8 +705,9 @@ class AIMClient:
             # Create ICBM Cookie (8 random bytes)
             cookie = os.urandom(8)
             
-            # Create HTML content
-            html_content = f'<HTML><BODY BGCOLOR="#ffffff"><FONT LANG="0">{message}</FONT></BODY></HTML>'
+            # Convert newlines to HTML breaks and create HTML content
+            message_with_breaks = message.replace('\n', '<br>')
+            html_content = f'<HTML><BODY BGCOLOR="#ffffff"><FONT LANG="0">{message_with_breaks}</FONT></BODY></HTML>'
             
             # Create SNAC data
             snac_data = (
