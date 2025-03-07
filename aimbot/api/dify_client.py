@@ -1,4 +1,4 @@
-"""
+d"""
 Dify API client for the AIM chatbot.
 Handles communication with the Dify Chat API.
 """
@@ -82,7 +82,7 @@ class DifyClient:
     
     async def clear_conversation(self, user_id: str) -> bool:
         """
-        Clear a user's conversation history by removing their conversation ID.
+        Clear a user's conversation history.
         
         Args:
             user_id (str): User identifier
@@ -90,13 +90,16 @@ class DifyClient:
         Returns:
             bool: True if conversation was cleared, False otherwise
         """
-        if user_id in self.conversations:
-            # Remove the conversation ID from our mapping
-            del self.conversations[user_id]
-            logger.info(f"Cleared conversation history for user {user_id}")
+        try:
+            # Simply remove the conversation ID from our mapping
+            # Next message will start a new conversation automatically
+            if user_id in self.conversations:
+                del self.conversations[user_id]
+                logger.info(f"Cleared conversation history for user {user_id}")
             return True
-        else:
-            logger.debug(f"No conversation found to clear for user {user_id}")
+            
+        except Exception as e:
+            logger.error(f"Error clearing conversation for user {user_id}: {str(e)}")
             return False
     
     async def send_message(self, user_id: str, message: str) -> Tuple[str, Dict[str, Any]]:
@@ -112,15 +115,15 @@ class DifyClient:
         """
         await self._ensure_session()
         
-        # Get conversation ID for this user, or create a new one
-        conversation_id = self.conversations.get(user_id)
+        # Get conversation ID for this user if it exists
+        conversation_id = self.conversations.get(user_id, "")
         
         # Prepare request payload
         payload = {
             "query": message,
             "user": user_id,
             "response_mode": self.mode,
-            "conversation_id": conversation_id or "",
+            "conversation_id": conversation_id,  # Empty string for new conversation
             "inputs": {}  # Required by Dify API even if empty
         }
         

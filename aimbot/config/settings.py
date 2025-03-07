@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # AIM Configuration
-AIM_USERNAME = os.getenv("AIM_USERNAME", "xotrendbabeox")
-AIM_PASSWORD = os.getenv("AIM_PASSWORD", "password")
+AIM_USERNAME = os.getenv("AIM_USERNAME", "AIGURU9000")
+AIM_PASSWORD = os.getenv("AIM_PASSWORD", "password1")
 AIM_SERVER = os.getenv("AIM_SERVER", "aim.visionfun.org")
 AIM_PORT = int(os.getenv("AIM_PORT", "5190"))
 

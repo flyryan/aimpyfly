@@ -81,11 +81,6 @@ class AIMBot:
             
             # Check if this is a "clear" command
             if message.strip().lower() == "clear":
-                # Cancel any pending buffer tasks
-                if sender in self.message_buffers and 'task' in self.message_buffers[sender]:
-                    self.message_buffers[sender]['task'].cancel()
-                    self.message_buffers[sender] = {}
-                
                 # Reset processing state
                 self.processing_users[sender] = False
                 
@@ -196,8 +191,12 @@ class AIMBot:
         typing_task = asyncio.create_task(self._send_periodic_typing(sender))
         
         try:
-            # Get the session ID
+            # Get or create a session ID for this user
             session_id = self.user_sessions.get(sender)
+            if not session_id:
+                session_id = str(uuid.uuid4())
+                self.user_sessions[sender] = session_id
+                logger.debug(f"Created new session for {sender}: {session_id}")
             
             # Send the message to Dify API
             response_text, metadata = await self.dify_client.send_message(session_id, message)
@@ -255,18 +254,39 @@ class AIMBot:
         """
         logger.info(f"Clearing conversation history for {sender}")
         
-        # Clear the conversation in Dify client
-        session_id = self.user_sessions.get(sender)
-        if session_id:
+        try:
+            # Clear the conversation in Dify client
+            # Note: We pass the sender directly since Dify uses it as the user ID
             await self.dify_client.clear_conversation(sender)
-            # Remove the session ID from our mapping
+            
+            # Clear all local state for this user
             if sender in self.user_sessions:
                 del self.user_sessions[sender]
-        
-        # Send confirmation message
-        confirmation = "Memory cleared. Your next message will be treated as the start of a new conversation."
-        await self.aim_handler.send_message(sender, confirmation)
-        logger.info(f"Sent clear confirmation to {sender}")
+                logger.debug(f"Removed session mapping for user {sender}")
+            
+            # Cancel and clear any pending message buffer tasks
+            if sender in self.message_buffers:
+                if 'task' in self.message_buffers[sender] and not self.message_buffers[sender]['task'].done():
+                    self.message_buffers[sender]['task'].cancel()
+                self.message_buffers[sender] = {
+                    'messages': [],
+                    'last_update': asyncio.get_event_loop().time(),
+                    'task': None
+                }
+                logger.debug(f"Reset message buffer for user {sender}")
+            
+            # Reset processing state
+            self.processing_users[sender] = False
+            
+            # Send confirmation message
+            confirmation = "Memory cleared. Your next message will be treated as the start of a new conversation."
+            await self.aim_handler.send_message(sender, confirmation)
+            logger.info(f"Sent clear confirmation to {sender}")
+            
+        except Exception as e:
+            logger.error(f"Error clearing conversation for {sender}: {str(e)}")
+            error_message = "Sorry, I encountered an error clearing the conversation. Please try again in a moment."
+            await self.aim_handler.send_message(sender, error_message)
     
     async def _send_periodic_typing(self, recipient: str, interval: float = 5.0):
         """
