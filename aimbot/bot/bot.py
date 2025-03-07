@@ -191,15 +191,8 @@ class AIMBot:
         typing_task = asyncio.create_task(self._send_periodic_typing(sender))
         
         try:
-            # Get or create a session ID for this user
-            session_id = self.user_sessions.get(sender)
-            if not session_id:
-                session_id = str(uuid.uuid4())
-                self.user_sessions[sender] = session_id
-                logger.debug(f"Created new session for {sender}: {session_id}")
-            
-            # Send the message to Dify API
-            response_text, metadata = await self.dify_client.send_message(session_id, message)
+            # Send the message to Dify API using the AIM username as the user identifier
+            response_text, metadata = await self.dify_client.send_message(sender, message)
             
             # Cancel the typing notification task
             typing_task.cancel()

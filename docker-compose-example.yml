@@ -1,0 +1,144 @@
+services:
+  vision2cool4u:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vision2Cool4u
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=vision2Cool4u
+      - AIM_PASSWORD=password
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-5kmGGYfP4z0omMEfNYVaLW8B
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=vision2Cool4u.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+      
+  helmh4x0r:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: HelmH4x0r
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=HelmH4x0r
+      - AIM_PASSWORD=password
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-Ij0Ad25K9ziqUM0jKtnrR8jl
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=HelmH4x0r.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs  
+          
+  daemond00m:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: DaemonD00m
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=DaemonD00m
+      - AIM_PASSWORD=password1
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-v7PF7A3SOClE3eSZe9Dm7f2g
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=DaemonD00m.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+          
+  pullrequestpunk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: PullRequestPunk
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=PullRequestPunk
+      - AIM_PASSWORD=password1
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-418j6c5uODzMD9F6ARu8gajU
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=PullRequestPunk.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+          
+  ec2pwnzu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: EC2PwnzU
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=EC2PwnzU
+      - AIM_PASSWORD=password1
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-zXCC0xOvM6a3ixnLBrcqC8jZ
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=EC2PwnzU.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+
+  aiguru9000:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: AIGURU9000
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=AIGURU9000
+      - AIM_PASSWORD=password1
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-9PqPf26XbZTtPnPwjrYsBIcA
+      - DIFY_API_URL=http://52.89.105.190/v1
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=AIGURU9000.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs

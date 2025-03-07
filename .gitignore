@@ -54,3 +54,4 @@ cline_docs/
 aimbot/__pycache__/main.cpython-313.pyc
 aimbot/__pycache__/main.cpython-313.pyc
 aimbot/.env
+docker-compose.yml
