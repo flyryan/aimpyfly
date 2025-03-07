@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  aimbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aimbot
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=${AIM_USERNAME:-xotrendbabeox}
+      - AIM_PASSWORD=${AIM_PASSWORD:-password}
+      - AIM_SERVER=${AIM_SERVER:-aim.visionfun.org}
+      - AIM_PORT=${AIM_PORT:-5190}
+      
+      # Dify API
+      - DIFY_API_KEY=${DIFY_API_KEY:-app-5kmGGYfP4z0omMEfNYVaLW8B}
+      - DIFY_API_URL=${DIFY_API_URL:-http://52.89.105.190/v1}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
+      - LOG_FILE=${LOG_FILE:-aimbot.log}
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
