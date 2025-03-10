@@ -306,24 +306,38 @@ class AIMBot:
             recipient (str): Recipient's username
             response (str): Response content
         """
-        # Check if the response is too long for AIM
-        # AIM has a message size limit, so we might need to split long messages
+        # AIM has a message size limit
         max_message_length = 2000  # AIM message size limit
         
-        if len(response) <= max_message_length:
-            # Send the response as a single message
-            await self.aim_handler.send_message(recipient, response)
-        else:
-            # Split the response into multiple messages
-            chunks = [response[i:i+max_message_length] for i in range(0, len(response), max_message_length)]
-            
-            for i, chunk in enumerate(chunks):
-                # Add a prefix to indicate that this is a multi-part message
-                prefix = f"[{i+1}/{len(chunks)}] "
-                await self.aim_handler.send_message(recipient, prefix + chunk)
-                
-                # Add a small delay between messages to avoid flooding
-                await asyncio.sleep(0.5)
+        # If the response is too long, truncate it
+        if len(response) > max_message_length:
+            logger.warning(f"Response too long ({len(response)} chars), truncating to {max_message_length} chars")
+            truncation_note = "... (response truncated due to length)"
+            response = response[:max_message_length - len(truncation_note)] + truncation_note
+        
+        # Send the response as a single message
+        logger.info(f"Sending response to {recipient} ({len(response)} chars)")
+        
+        # Try to send the message with retries
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            try:
+                success = await self.aim_handler.send_message(recipient, response)
+                if success:
+                    logger.debug(f"Response sent to {recipient} successfully")
+                    return
+                else:
+                    logger.error(f"Failed to send response to {recipient} (attempt {attempt}/{max_retries})")
+                    if attempt < max_retries:
+                        # Wait before retrying
+                        await asyncio.sleep(2.0 * attempt)  # Increasing delay with each attempt
+            except Exception as e:
+                logger.error(f"Error sending response to {recipient} (attempt {attempt}/{max_retries}): {str(e)}")
+                if attempt < max_retries:
+                    await asyncio.sleep(2.0 * attempt)
+        
+        # If we get here, all attempts failed
+        logger.error(f"Failed to send response to {recipient} after {max_retries} attempts")
     
     async def handle_error(self, recipient: str, error: str):
         """

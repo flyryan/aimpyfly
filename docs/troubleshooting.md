@@ -1,5 +1,51 @@
 # Troubleshooting Guide
 
+## Streaming Mode
+
+The AIM bot supports streaming mode for the Dify API, which provides more responsive AI responses. When using streaming mode:
+
+1. The Dify API sends responses in chunks as they're generated
+2. The bot buffers these chunks until the complete response is received
+3. Once the full response is available, it's sent as a single message to the AIM user
+
+This approach ensures compatibility with the AIM protocol while benefiting from the responsiveness of streaming mode.
+
+### Common Issues with Streaming Mode
+
+If you encounter issues with streaming mode:
+
+1. **Connection Drops**: If the AIM connection drops during streaming, try:
+   - Reducing the API_MODE to "blocking" in docker-compose.yml
+   - Checking network stability
+   - Ensuring the AIM server is not rate-limiting the bot
+
+2. **Slow Responses**: If responses seem slow:
+   - The streaming buffer might be working correctly, but large responses take time to generate
+   - The bot will show a typing indicator while buffering the response
+
+3. **Truncated Messages**: If messages are cut off:
+   - This is by design - AIM has message size limits
+   - Very long responses will be truncated to fit within AIM's limits
+
+## Connection Issues
+
+If the bot disconnects from the AIM server:
+
+1. It will automatically attempt to reconnect
+2. Check the logs for connection errors
+3. Verify the AIM credentials are correct
+4. Ensure the AIM server is online and accepting connections
+
+## Message Handling
+
+The bot includes several features for message handling:
+
+1. **Message Buffering**: Short messages (<10 chars) are buffered for 1.5 seconds to combine multiple short messages
+2. **Typing Indicators**: The bot sends typing indicators while processing messages
+3. **Error Recovery**: If an error occurs, the bot will attempt to recover and continue processing messages
+
+# Troubleshooting Guide
+
 This document provides solutions for common issues that may arise when running the AIM chatbot.
 
 ## Table of Contents

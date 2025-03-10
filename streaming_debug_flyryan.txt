@@ -1,0 +1,19 @@
+data: {"event": "agent_thought", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "d315c0ba-e1f8-4ec4-add0-550c2a385370", "position": 1, "thought": "", "observation": "", "tool": "", "tool_labels": {}, "tool_input": "", "message_files": []}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": "Hey"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": " there! Welcome to AIM! I'm Acc"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": "OUNtName. :-) \n\nTo"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": " get started, could you please provide your Trend Micro"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": " email address so I can look you up in"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": " our system?"}
+
+data: {"event": "agent_message", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "answer": ""}
+
+data: {"event": "agent_thought", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "d315c0ba-e1f8-4ec4-add0-550c2a385370", "position": 1, "thought": "Hey there! Welcome to AIM! I'm AccOUNtName. :-) \n\nTo get started, could you please provide your Trend Micro email address so I can look you up in our system?", "observation": "", "tool": "", "tool_labels": {}, "tool_input": "", "message_files": []}
+
+data: {"event": "message_end", "conversation_id": "60042b04-e38a-4c1e-9f59-42415554c14f", "message_id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "created_at": 1741642930, "task_id": "702c5d1e-e576-4b75-a2f0-4fd2c0eec294", "id": "79dd3105-eb74-4988-a9e6-128518c8d4d7", "metadata": {"usage": {"prompt_tokens": 527, "prompt_unit_price": "0.0", "prompt_price_unit": "0.0", "prompt_price": "0E-7", "completion_tokens": 51, "completion_unit_price": "0.0", "completion_price_unit": "0.0", "completion_price": "0E-7", "total_tokens": 0, "total_price": "0E-7", "currency": "USD", "latency": 0.0}}, "files": null}

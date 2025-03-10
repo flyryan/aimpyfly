@@ -15,6 +15,8 @@ services:
       # Dify API
       - DIFY_API_KEY=app-5kmGGYfP4z0omMEfNYVaLW8B
       - DIFY_API_URL=http://52.89.105.190/v1
+      # API_MODE: "blocking" for standard bots, "streaming" for agent bots
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
@@ -39,6 +41,7 @@ services:
       # Dify API
       - DIFY_API_KEY=app-Ij0Ad25K9ziqUM0jKtnrR8jl
       - DIFY_API_URL=http://52.89.105.190/v1
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
@@ -63,6 +66,7 @@ services:
       # Dify API
       - DIFY_API_KEY=app-v7PF7A3SOClE3eSZe9Dm7f2g
       - DIFY_API_URL=http://52.89.105.190/v1
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
@@ -87,6 +91,8 @@ services:
       # Dify API
       - DIFY_API_KEY=app-418j6c5uODzMD9F6ARu8gajU
       - DIFY_API_URL=http://52.89.105.190/v1
+      # Using streaming mode for agent bot support
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
@@ -111,6 +117,7 @@ services:
       # Dify API
       - DIFY_API_KEY=app-zXCC0xOvM6a3ixnLBrcqC8jZ
       - DIFY_API_URL=http://52.89.105.190/v1
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
@@ -135,10 +142,64 @@ services:
       # Dify API
       - DIFY_API_KEY=app-9PqPf26XbZTtPnPwjrYsBIcA
       - DIFY_API_URL=http://52.89.105.190/v1
+      # Using streaming mode for agent bot support
+      - API_MODE=blocking
       
       # Logging
       - LOG_LEVEL=INFO
       - LOG_FILE=AIGURU9000.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+
+  xxtwi5t3dpair5xx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xXtwi5t3dPair5Xx
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=xXtwi5t3dPair5Xx
+      - AIM_PASSWORD=password1
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-2Y7z1Lavsfs0Vbaki3vF3Owd
+      - DIFY_API_URL=http://52.89.105.190/v1    
+      # API_MODE: "blocking" for standard bots, "streaming" for agent bots
+      - API_MODE=blocking
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=/app/logs/xXtwi5t3dPair5Xx.log
+    volumes:
+      # Mount logs directory to persist logs
+      - ./logs:/app/logs
+
+  handlepoet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: HandlePoet
+    restart: unless-stopped
+    environment:
+      # AIM Configuration
+      - AIM_USERNAME=HandlePoet
+      - AIM_PASSWORD=password
+      - AIM_SERVER=aim.visionfun.org
+      - AIM_PORT=5190
+      
+      # Dify API
+      - DIFY_API_KEY=app-ONu0R9S3wESNtJyZRRjZKscX
+      - DIFY_API_URL=http://52.89.105.190/v1
+      # API_MODE: "blocking" for standard bots, "streaming" for agent bots
+      - API_MODE=streaming
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FILE=HandlePoet.log
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs

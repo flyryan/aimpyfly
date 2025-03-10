@@ -130,34 +130,221 @@ class DifyClient:
         logger.debug(f"Sending message to Dify API: {payload}")
         
         try:
-            async with self.session.post(
-                f"{self.api_url}/chat-messages",
-                headers=self._get_headers(),
-                json=payload
-            ) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    logger.error(f"Dify API error: {response.status} - {error_text}")
-                    return f"Error: {response.status}", {}
-                
-                data = await response.json()
-                
-                # Store the conversation ID for future messages
-                if "conversation_id" in data:
-                    self.conversations[user_id] = data["conversation_id"]
-                    logger.debug(f"Updated conversation ID for user {user_id}: {data['conversation_id']}")
-                
-                # Extract the answer and metadata
-                answer = data.get("answer", "")
-                metadata = data.get("metadata", {})
-                
-                logger.debug(f"Received response from Dify API: {len(answer)} chars")
-                
-                return answer, metadata
+            # Handle differently based on response mode
+            if self.mode == "blocking":
+                return await self._handle_blocking_request(user_id, payload)
+            elif self.mode == "streaming":
+                return await self._handle_streaming_request(user_id, payload)
+            else:
+                logger.error(f"Unsupported response mode: {self.mode}")
+                return f"Error: Unsupported response mode {self.mode}", {}
                 
         except aiohttp.ClientError as e:
             logger.error(f"Dify API request error: {str(e)}")
             return f"Error: {str(e)}", {}
+    
+    async def _handle_blocking_request(self, user_id: str, payload: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        """
+        Handle a blocking request to the Dify API.
+        
+        Args:
+            user_id (str): User identifier
+            payload (Dict[str, Any]): Request payload
+            
+        Returns:
+            Tuple[str, Dict[str, Any]]: Response text and metadata
+        """
+        async with self.session.post(
+            f"{self.api_url}/chat-messages",
+            headers=self._get_headers(),
+            json=payload
+        ) as response:
+            if response.status != 200:
+                error_text = await response.text()
+                logger.error(f"Dify API error: {response.status} - {error_text}")
+                return f"Error: {response.status}", {}
+            
+            data = await response.json()
+            
+            # Store the conversation ID for future messages
+            if "conversation_id" in data:
+                self.conversations[user_id] = data["conversation_id"]
+                logger.debug(f"Updated conversation ID for user {user_id}: {data['conversation_id']}")
+            
+            # Extract the answer and metadata
+            answer = data.get("answer", "")
+            metadata = {
+                "conversation_id": data.get("conversation_id", ""),
+                "created_at": data.get("created_at", 0),
+                "id": data.get("id", "")
+            }
+            
+            logger.debug(f"Received blocking response from Dify API: {len(answer)} chars")
+            
+            return answer, metadata
+    
+    async def _handle_streaming_request(self, user_id: str, payload: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        """
+        Handle a streaming request to the Dify API.
+        
+        Args:
+            user_id (str): User identifier
+            payload (Dict[str, Any]): Request payload
+            
+        Returns:
+            Tuple[str, Dict[str, Any]]: Complete response text and metadata
+        """
+        # For streaming, we need to buffer the response chunks
+        buffer = []
+        metadata = {}
+        raw_lines = []  # Store raw lines for debugging
+        
+        logger.debug(f"Starting streaming request for user {user_id}")
+        
+        async with self.session.post(
+            f"{self.api_url}/chat-messages",
+            headers=self._get_headers(),
+            json=payload
+        ) as response:
+            if response.status != 200:
+                error_text = await response.text()
+                logger.error(f"Dify API error: {response.status} - {error_text}")
+                return f"Error: {response.status}", {}
+            
+            logger.debug(f"Response headers: {response.headers}")
+            
+            # Process the stream
+            async for line in response.content:
+                if not line:
+                    continue
+                
+                line_str = line.decode('utf-8').strip()
+                raw_lines.append(line_str)  # Store raw line for debugging
+                
+                if not line_str or line_str == 'data: [DONE]':
+                    continue
+                
+                # Log raw line for debugging (first few and last few)
+                if len(raw_lines) <= 3 or len(raw_lines) % 50 == 0:
+                    logger.debug(f"Raw line: {line_str}")
+                
+                # Remove 'data: ' prefix if present
+                if line_str.startswith('data: '):
+                    line_str = line_str[6:]
+                
+                try:
+                    event_data = json.loads(line_str)
+                    event_type = event_data.get('event')
+                    
+                    # Handle different event types
+                    if event_type == 'message':
+                        # Standard format (text field)
+                        data = event_data.get('data', {})
+                        text_chunk = data.get('text', '')
+                        buffer.append(text_chunk)
+                        logger.debug(f"Received 'message' chunk #{len(buffer)} for {user_id}: '{text_chunk}'")
+                    
+                    elif event_type == 'agent_message':
+                        # Agent format (answer field directly in event_data)
+                        answer_chunk = event_data.get('answer', '')
+                        if answer_chunk:
+                            buffer.append(answer_chunk)
+                            # Only log occasionally to avoid flooding the console
+                            if len(buffer) <= 3 or len(buffer) % 10 == 0:
+                                logger.debug(f"Received 'agent_message' chunk #{len(buffer)} for {user_id}: '{answer_chunk}'")
+                    
+                    elif event_type == 'message_end':
+                        # Standard format end event or agent format end event
+                        conversation_id = event_data.get('conversation_id', '')
+                        if conversation_id:
+                            self.conversations[user_id] = conversation_id
+                            logger.debug(f"Updated conversation ID for user {user_id}: {conversation_id}")
+                        
+                        metadata = {
+                            "conversation_id": conversation_id,
+                            "created_at": event_data.get("created_at", 0),
+                            "id": event_data.get("id", "")
+                        }
+                        logger.debug(f"Received message_end event: {metadata}")
+                    
+                    elif event_type == 'agent_thought':
+                        # Agent thought event - store conversation ID if present
+                        conversation_id = event_data.get('conversation_id', '')
+                        if conversation_id:
+                            self.conversations[user_id] = conversation_id
+                            logger.debug(f"Updated conversation ID from agent_thought for {user_id}: {conversation_id}")
+                        
+                        # Extract thought content if available
+                        thought = event_data.get('thought', '')
+                        if thought and not buffer:  # Only use thought if buffer is empty
+                            buffer.append(thought)
+                            logger.debug(f"Using thought as fallback content: '{thought[:50]}...'")
+                        
+                        # Note: Removed duplicate code and reference to undefined 'data' variable
+                
+                except json.JSONDecodeError as e:
+                    logger.error(f"Error parsing streaming response: {e} - Line: {line_str}")
+                    continue
+        
+        # Combine all chunks into the final response
+        complete_response = ''.join(buffer)
+        
+        # If buffer is empty but we have raw lines, try to extract content directly
+        if not complete_response and raw_lines:
+            logger.warning(f"Buffer is empty but received {len(raw_lines)} raw lines. Attempting direct extraction.")
+            
+            # First try to extract from agent_message events
+            for line in raw_lines:
+                if '"event":"agent_message"' in line and '"answer":"' in line:
+                    try:
+                        # Extract answer directly using string operations
+                        start_idx = line.find('"answer":"') + 9
+                        if start_idx > 9:  # Found "answer":"
+                            end_idx = line.find('"', start_idx)
+                            if end_idx > start_idx:
+                                text = line[start_idx:end_idx]
+                                buffer.append(text)
+                                logger.debug(f"Extracted answer directly: '{text}'")
+                    except Exception as e:
+                        logger.error(f"Error extracting answer directly: {e}")
+            
+            # If still empty, try to extract from agent_thought events
+            if not buffer:
+                for line in raw_lines:
+                    if '"event":"agent_thought"' in line and '"thought":"' in line:
+                        try:
+                            start_idx = line.find('"thought":"') + 10
+                            if start_idx > 10:  # Found "thought":"
+                                end_idx = line.find('"', start_idx)
+                                if end_idx > start_idx:
+                                    text = line[start_idx:end_idx]
+                                    buffer.append(text)
+                                    logger.debug(f"Extracted thought directly: '{text}'")
+                                    break  # Just use the first complete thought
+                        except Exception as e:
+                            logger.error(f"Error extracting thought directly: {e}")
+            
+            # Try again with the extracted content
+            complete_response = ''.join(buffer)
+            
+            # If still empty, use a default response
+            if not complete_response:
+                logger.error("Failed to extract any content from streaming response")
+                complete_response = "I'm sorry, I encountered an issue processing your request."
+        
+        logger.info(f"Completed streaming response for {user_id}, length: {len(complete_response)}")
+        if complete_response:
+            logger.debug(f"Response preview: '{complete_response[:100]}...'")
+        
+        # Write raw response to file for debugging
+        try:
+            with open(f"streaming_debug_{user_id}.txt", "w") as f:
+                f.write("\n".join(raw_lines))
+            logger.debug(f"Wrote raw streaming response to streaming_debug_{user_id}.txt")
+        except Exception as e:
+            logger.error(f"Error writing debug file: {e}")
+        
+        return complete_response, metadata
     
     async def handle_response(self, response: Dict[str, Any]) -> str:
         """
@@ -169,11 +356,14 @@ class DifyClient:
         Returns:
             str: Processed response text
         """
-        # In blocking mode, we just return the answer
-        if self.mode == "blocking":
+        # Extract the answer from the response
+        if isinstance(response, dict):
             return response.get("answer", "")
         
-        # In streaming mode, we would process the stream chunks
-        # But since we're using blocking mode for AIM, this is not implemented
-        logger.warning("Streaming mode not implemented, using blocking mode")
-        return response.get("answer", "")
+        # If it's already a string (from streaming mode), return it directly
+        if isinstance(response, str):
+            return response
+        
+        # Fallback
+        logger.warning(f"Unexpected response type: {type(response)}")
+        return str(response)

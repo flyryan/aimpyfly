@@ -48,6 +48,7 @@ AIM_PORT=5190
 # Dify API
 DIFY_API_KEY=your_dify_api_key
 DIFY_API_URL=http://52.89.105.190/v1
+API_MODE=blocking  # or "streaming" for streaming mode
 
 # Logging
 LOG_LEVEL=DEBUG
@@ -85,6 +86,20 @@ aimbot/
 ├── main.py             # Entry point
 └── README.md           # Documentation
 ```
+## API Modes
+
+The bot supports two modes for interacting with the Dify API:
+
+### Blocking Mode
+- Default mode where the entire response is received at once
+- Simpler implementation but higher latency
+- Set with `API_MODE=blocking` in environment variables
+
+### Streaming Mode
+- Responses come in chunks that are buffered before sending to the user
+- More responsive but requires client-side buffering
+- Set with `API_MODE=streaming` in environment variables
+- Provides a more natural conversation experience
 
 ## Error Handling
 
@@ -93,6 +108,7 @@ The bot includes robust error handling:
 - Automatic reconnection to AIM on disconnection
 - Rate limiting for message sending
 - Error logging
+- Graceful degradation on API failures
 - Graceful degradation on API failures
 
 ## Logging

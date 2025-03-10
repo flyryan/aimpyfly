@@ -1,0 +1,21 @@
+data: {"event": "agent_thought", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "444d966d-4969-42ac-b785-f38be60c0828", "position": 1, "thought": "", "observation": "", "tool": "", "tool_labels": {}, "tool_input": "", "message_files": []}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": "Hi"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": " there! Welcome to AOL Instant Messenger"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": "! :-)\n\nI'm AccOUNtName"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": ", an AIM bot. I can help you look"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": " up your username.\n\nCould you please provide me"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": " with your Trend Micro email address so I can look"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": " up your information?"}
+
+data: {"event": "agent_message", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "answer": ""}
+
+data: {"event": "agent_thought", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "444d966d-4969-42ac-b785-f38be60c0828", "position": 1, "thought": "Hi there! Welcome to AOL Instant Messenger! :-)\n\nI'm AccOUNtName, an AIM bot. I can help you look up your username.\n\nCould you please provide me with your Trend Micro email address so I can look up your information?", "observation": "", "tool": "", "tool_labels": {}, "tool_input": "", "message_files": []}
+
+data: {"event": "message_end", "conversation_id": "240d582e-c33a-4ee4-a07e-5d36f993a113", "message_id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "created_at": 1741638112, "task_id": "6b8a5c6a-4284-4e84-9c67-8abf9b959304", "id": "5c1b335e-6ded-4cf5-8997-8ddac524abc8", "metadata": {"usage": {"prompt_tokens": 532, "prompt_unit_price": "0.0", "prompt_price_unit": "0.0", "prompt_price": "0E-7", "completion_tokens": 64, "completion_unit_price": "0.0", "completion_price_unit": "0.0", "completion_price": "0E-7", "total_tokens": 0, "total_price": "0E-7", "currency": "USD", "latency": 0.0}}, "files": null}

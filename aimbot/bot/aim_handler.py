@@ -153,17 +153,33 @@ class AIMHandler:
         Returns:
             bool: True if message was sent successfully, False otherwise
         """
+        # Check connection status
         if not self.client or not self.connected:
             logger.error("Cannot send message: Not connected to AIM server")
-            return False
+            # Try to reconnect
+            reconnected = await self.connect()
+            if not reconnected:
+                logger.error("Failed to reconnect to AIM server")
+                return False
+            logger.info("Reconnected to AIM server")
+        
+        # Ensure message is not too long for AIM protocol
+        max_length = 2000  # AIM message size limit
+        if len(message) > max_length:
+            logger.warning(f"Message too long ({len(message)} chars), truncating to {max_length} chars")
+            message = message[:max_length-3] + "..."
         
         try:
-            logger.info(f"Sending message to {recipient}")
+            logger.info(f"Sending message to {recipient} ({len(message)} chars)")
             await self.client.send_message(recipient, message)
-            logger.debug(f"Message sent to {recipient}: {message}")
+            logger.debug(f"Message sent to {recipient} successfully")
             return True
         except Exception as e:
             logger.error(f"Failed to send message to {recipient}: {str(e)}")
+            # Check if we need to reconnect
+            if "connection" in str(e).lower() or "disconnected" in str(e).lower():
+                logger.warning("Connection issue detected, attempting to reconnect")
+                await self.handle_disconnect()
             return False
     
     async def handle_disconnect(self):

@@ -31,8 +31,8 @@ LOG_LEVEL_MAP = {
 LOG_LEVEL = LOG_LEVEL_MAP.get(os.getenv("LOG_LEVEL", "DEBUG"), logging.DEBUG)
 LOG_FILE = os.getenv("LOG_FILE", "aimbot.log")
 
-# API Mode (blocking due to AIM limitations)
-API_MODE = "blocking"
+# API Mode (blocking or streaming)
+API_MODE = os.getenv("API_MODE", "blocking")
 
 def get_aim_credentials():
     """Return AIM credentials as a dictionary."""
