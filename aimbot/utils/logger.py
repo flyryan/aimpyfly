@@ -45,7 +45,7 @@ class ConversationLogger:
     
     def log_message(self, user_id, message, is_from_user=True):
         """
-        Log a conversation message with timestamp.
+        Log a conversation message with timestamp and unique separator.
         
         Args:
             user_id (str): User identifier
@@ -54,7 +54,12 @@ class ConversationLogger:
         """
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         direction = user_id if is_from_user else "Bot"
-        log_entry = f"[{timestamp}] {direction}: {message}\n"
+        
+        # Create a unique separator that wouldn't appear in normal messages
+        separator = "\n#=====< MESSAGE BOUNDARY >=====# \n"
+        
+        # Format the log entry with the separator before each message
+        log_entry = f"{separator}[{timestamp}] {direction}: {message}\n"
         
         with open(self._get_log_file(user_id), 'a', encoding='utf-8') as f:
             f.write(log_entry)
