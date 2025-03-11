@@ -20,7 +20,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=vision2Cool4u.log
+      - LOG_FILE=/app/logs/vision2Cool4u.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/vision2Cool4u
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -45,7 +46,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=HelmH4x0r.log
+      - LOG_FILE=/app/logs/HelmH4x0r.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/HelmH4x0r
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs  
@@ -70,7 +72,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=DaemonD00m.log
+      - LOG_FILE=/app/logs/DaemonD00m.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/DaemonD00m
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -96,7 +99,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=PullRequestPunk.log
+      - LOG_FILE=/app/logs/PullRequestPunk.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/PullRequestPunk
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -121,7 +125,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=EC2PwnzU.log
+      - LOG_FILE=/app/logs/EC2PwnzU.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/EC2PwnzU
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -147,7 +152,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=AIGURU9000.log
+      - LOG_FILE=/app/logs/AIGURU9000.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/AIGURU9000
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -174,6 +180,7 @@ services:
       # Logging
       - LOG_LEVEL=INFO
       - LOG_FILE=/app/logs/xXtwi5t3dPair5Xx.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/xXtwi5t3dPair5Xx
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs
@@ -199,7 +206,8 @@ services:
       
       # Logging
       - LOG_LEVEL=INFO
-      - LOG_FILE=HandlePoet.log
+      - LOG_FILE=/app/logs/HandlePoet.log
+      - CONVERSATION_LOG_DIR=/app/logs/conversations/HandlePoet
     volumes:
       # Mount logs directory to persist logs
       - ./logs:/app/logs

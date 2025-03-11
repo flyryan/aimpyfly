@@ -1,13 +1,63 @@
 """
 Logging configuration for the AIM chatbot.
-Provides a custom logger with colorized output.
+Provides a custom logger with colorized output and conversation logging capabilities.
 """
 import logging
 import os
+from datetime import datetime
 from colorama import Fore, Style, init
+from aimbot.config.settings import CONVERSATION_LOG_DIR
 
 # Initialize colorama
 init(autoreset=True)
+
+class ConversationLogger:
+    """
+    Handles logging of conversations for individual bots and their users.
+    Creates separate log files for each user's conversations with timestamps.
+    """
+    def __init__(self, bot_name):
+        """
+        Initialize conversation logger.
+        
+        Args:
+            bot_name (str): Name of the bot (unused, kept for compatibility)
+        """
+        self.base_dir = CONVERSATION_LOG_DIR
+        self._ensure_directory()
+    
+    def _ensure_directory(self):
+        """Create the bot's conversation directory if it doesn't exist."""
+        if not os.path.exists(self.base_dir):
+            os.makedirs(self.base_dir)
+    
+    def _get_log_file(self, user_id):
+        """
+        Get the log file path for a specific user.
+        
+        Args:
+            user_id (str): User identifier for file naming
+            
+        Returns:
+            str: Path to the user's log file
+        """
+        return os.path.join(self.base_dir, f"{user_id}.log")
+    
+    def log_message(self, user_id, message, is_from_user=True):
+        """
+        Log a conversation message with timestamp.
+        
+        Args:
+            user_id (str): User identifier
+            message (str): Message content
+            is_from_user (bool): True if message is from user, False if from bot
+        """
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        direction = user_id if is_from_user else "Bot"
+        log_entry = f"[{timestamp}] {direction}: {message}\n"
+        
+        with open(self._get_log_file(user_id), 'a', encoding='utf-8') as f:
+            f.write(log_entry)
 
 class ColoredFormatter(logging.Formatter):
     """

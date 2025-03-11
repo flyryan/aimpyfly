@@ -20,6 +20,8 @@ DIFY_API_KEY = os.getenv("DIFY_API_KEY", "app-5kmGGYfP4z0omMEfNYVaLW8B")
 DIFY_API_URL = os.getenv("DIFY_API_URL", "http://52.89.105.190/v1")
 
 # Logging Configuration
+CONVERSATION_LOG_DIR = os.getenv("CONVERSATION_LOG_DIR", "logs/conversations")
+
 LOG_LEVEL_MAP = {
     "DEBUG": logging.DEBUG,
     "INFO": logging.INFO,

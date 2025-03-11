@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional
 
 from aimbot.api.dify_client import DifyClient
 from aimbot.bot.aim_handler import AIMHandler
-from aimbot.utils.logger import get_logger
+from aimbot.utils.logger import get_logger, ConversationLogger
 
 logger = get_logger(__name__)
 
@@ -36,6 +36,9 @@ class AIMBot:
         self.message_buffers: Dict[str, Dict[str, Any]] = {}  # Message buffers for each user
         self.processing_users: Dict[str, bool] = {}  # Track users with ongoing API requests
         self.running = False
+        
+        # Initialize conversation logger with bot's screen name
+        self.conversation_logger = ConversationLogger(aim_credentials.get('screen_name', 'unknown_bot'))
         
         logger.debug("Initialized AIM bot")
     
@@ -78,6 +81,9 @@ class AIMBot:
         """
         try:
             logger.info(f"Processing message from {sender}")
+            
+            # Log the user's message
+            self.conversation_logger.log_message(sender, message, is_from_user=True)
             
             # Check if this is a "clear" command
             if message.strip().lower() == "clear":
@@ -314,6 +320,9 @@ class AIMBot:
             logger.warning(f"Response too long ({len(response)} chars), truncating to {max_message_length} chars")
             truncation_note = "... (response truncated due to length)"
             response = response[:max_message_length - len(truncation_note)] + truncation_note
+        
+        # Log the bot's response
+        self.conversation_logger.log_message(recipient, response, is_from_user=False)
         
         # Send the response as a single message
         logger.info(f"Sending response to {recipient} ({len(response)} chars)")
